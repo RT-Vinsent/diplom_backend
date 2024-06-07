@@ -29,6 +29,17 @@ app.use('/api/auth', authRouter);
 app.use('/api', authMiddleware, hallsRouter);
 
 /**
+ * Маршруты для проверки работоспособности сервера.
+ */
+app.get('/', (req, res) => {
+  res.send('Добро пожаловать! Сервер работает.');
+});
+
+app.get('/api', (req, res) => {
+  res.send('API работает!');
+});
+
+/**
  * Запуск сервера на указанном порту.
  * @const {number} PORT - Порт, на котором будет запущен сервер.
  */

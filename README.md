@@ -54,8 +54,8 @@
 
 1. Клонируйте репозиторий:
     ```sh
-    git clone <URL>
-    cd <название репозитория>
+    git clone https://github.com/RT-Vinsent/diplom_backend.git
+    cd diplom_backend
     ```
 
 2. Создайте файл `.env` в корне проекта и добавьте следующие переменные окружения:
@@ -85,8 +85,8 @@
 
 1. Клонируйте репозиторий:
     ```sh
-    git clone <URL>
-    cd <название репозитория>
+    git clone https://github.com/RT-Vinsent/diplom_frontend.git
+    cd diplom_frontend
     ```
 
 2. Создайте файл `.env` в корне проекта и добавьте следующие переменные окружения:

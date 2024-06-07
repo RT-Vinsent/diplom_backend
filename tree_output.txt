@@ -1,0 +1,28 @@
+PATH:.
+│   .env
+│   .gitignore
+│   db.js
+│   index.js
+│   package-lock.json
+│   package.json
+│   pg-migrate.config.js
+│   resetDb.js
+│   runMigrations.js
+│   tree_output.txt
+│   
+├───middleware
+│       auth.js
+│       
+├───migrations
+│       1717738472803_create-tables.js
+│       1717738479853_populate-tables.js
+│       
+├───node_modules
+│                   
+└───routes
+        auth.js
+        halls.js
+        movies.js
+        seats.js
+        session.js
+        

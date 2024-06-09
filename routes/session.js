@@ -128,6 +128,7 @@ router.get('/sessions/by-date', async (req, res) => {
         sessions.movie_id,
         sessions.time,
         sessions.date,
+        sessions.status,
         movies.title,
         movies.duration,
         movies.poster
@@ -217,20 +218,64 @@ router.delete('/sessions/:id', authMiddleware, async (req, res) => {
   }
 });
 
+// /**
+//  * Маршрут для обновления статуса всех сеансов на "open".
+//  *
+//  * @name post/sessions/open
+//  * @function
+//  * @memberof module:routers/session
+//  * @returns {void}
+//  */
+// router.post('/sessions/open', authMiddleware, async (req, res) => {
+//   try {
+//     await pool.query(`UPDATE sessions SET status = 'open' WHERE status = 'closed'`);
+//     res.sendStatus(200);
+//   } catch (err) {
+//     console.error('Ошибка при обновлении статуса сеансов:', err.message);
+//     res.status(500).send('Ошибка сервера');
+//   }
+// });
+
 /**
- * Маршрут для обновления статуса всех сеансов на "open".
- *
- * @name post/sessions/open
- * @function
- * @memberof module:routers/session
- * @returns {void}
+ * @route POST /sessions/status
+ * @desc Обновление статуса сеансов для зала
+ * @access Public
  */
-router.post('/sessions/open', authMiddleware, async (req, res) => {
+router.post('/sessions/status', authMiddleware, async (req, res) => {
+  const { hallId, status } = req.body;
+
   try {
-    await pool.query(`UPDATE sessions SET status = 'open' WHERE status = 'closed'`);
-    res.sendStatus(200);
+    // Обновляем сеансы, у которых нет проданных билетов
+    const result = await pool.query(`
+      UPDATE sessions
+      SET status = $1
+      WHERE hall_id = $2 AND status != $1 AND id NOT IN (
+        SELECT session_id FROM sold_tickets
+      )`,
+      [status, hallId]
+    );
+
+    // Проверяем, если есть сеансы, которые не были обновлены из-за наличия проданных билетов
+    const remainingSessions = await pool.query(`
+      SELECT id FROM sessions
+      WHERE hall_id = $2 AND status != $1 AND id IN (
+        SELECT session_id FROM sold_tickets
+      )`,
+      [status, hallId]
+    );
+
+    if (remainingSessions.rowCount > 0) {
+      return res.status(200).json({
+        message: `Не все сеансы были ${status === 'open' ? 'открыты' : 'закрыты'}, так как имеются сеансы с проданными билетами.`
+      });
+    } else {
+      return res.status(200).json({
+        message: `Все сеансы были успешно ${status === 'open' ? 'открыты' : 'закрыты'}.`
+      });
+    }
   } catch (err) {
     console.error('Ошибка при обновлении статуса сеансов:', err.message);
+    console.error('Подробности ошибки:', err);
     res.status(500).send('Ошибка сервера');
   }
 });

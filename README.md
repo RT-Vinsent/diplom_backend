@@ -1,7 +1,14 @@
 # Инструкция по установке и запуску проекта
 
 - Фронтенд: https://github.com/RT-Vinsent/diplom_frontend
-- Бекенд: текущий репозиторий
+- Бекенд: [Текущий репозиторий](https://github.com/RT-Vinsent/diplom_backend)
+
+- Тестовый сайт https://rtvini.ru
+- Даныне для админки:
+   - Логин: `roman@roman.com`
+   - Пароль: `roman`
+
+---
 
 ## Содержание
 1. [Требования](#требования)
@@ -172,8 +179,9 @@ PATH:.
 │   package.json
 │   README.md
 │   tree_output.txt
+│   tree_output2.txt
 │   tsconfig.json
-│   
+│               
 ├───node_modules
 │           
 ├───public
@@ -221,16 +229,27 @@ PATH:.
     │   │   │       ConfStepWrapper.css
     │   │   │       ConfStepWrapper.tsx
     │   │   │       
+    │   │   ├───HallSelector
+    │   │   │       HallSelector.css
+    │   │   │       HallSelector.tsx
+    │   │   │       
     │   │   ├───MovieModal
     │   │   │       MovieModal.css
     │   │   │       MovieModal.tsx
     │   │   │       
     │   │   └───SessionGrid
-    │   │           MovieList.tsx
-    │   │           SessionGrid.css
-    │   │           SessionGrid.tsx
-    │   │           SessionList.tsx
-    │   │           
+    │   │       │   SessionGrid.css
+    │   │       │   SessionGrid.tsx
+    │   │       │   
+    │   │       ├───MovieList
+    │   │       │       MovieList.css
+    │   │       │       MovieList.tsx
+    │   │       │       
+    │   │       └───SessionList
+    │   │               Session.css
+    │   │               Session.tsx
+    │   │               SessionList.tsx
+    │   │               
     │   ├───Button
     │   │       Button.css
     │   │       Button.tsx

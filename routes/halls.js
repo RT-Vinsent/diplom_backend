@@ -25,6 +25,27 @@ router.get('/halls', async (req, res) => {
 router.delete('/halls/:id', async (req, res) => {
   const { id } = req.params;
   try {
+    // Проверка наличия проданных билетов в зале
+    const { rowCount: soldTicketsCount } = await pool.query(
+      'SELECT 1 FROM sold_tickets st JOIN sessions s ON st.session_id = s.id WHERE s.hall_id = $1 LIMIT 1',
+      [id]
+    );
+
+    if (soldTicketsCount > 0) {
+      return res.status(400).json({ message: 'В зале есть проданные билеты, удаление невозможно.' });
+    }
+
+    // Проверка наличия сеансов со статусом open
+    const { rowCount: openSessionsCount } = await pool.query(
+      'SELECT 1 FROM sessions WHERE hall_id = $1 AND status = $2 LIMIT 1',
+      [id, 'open']
+    );
+
+    if (openSessionsCount > 0) {
+      return res.status(400).json({ message: 'Приостановите продажу билетов для этого зала, прежде чем удалять его.' });
+    }
+
+    // Удаление зала
     await pool.query('DELETE FROM halls WHERE id = $1', [id]);
     res.sendStatus(204);
   } catch (err) {
@@ -32,6 +53,7 @@ router.delete('/halls/:id', async (req, res) => {
     res.status(500).send('Ошибка сервера');
   }
 });
+
 
 /**
  * @route POST /halls
@@ -77,6 +99,15 @@ router.post('/halls/:id/config', async (req, res) => {
   const { id } = req.params;
   const { seats } = req.body;
   try {
+    const { rowCount } = await pool.query(
+      'SELECT 1 FROM sold_tickets st JOIN sessions s ON st.session_id = s.id WHERE s.hall_id = $1 LIMIT 1',
+      [id]
+    );
+
+    if (rowCount > 0) {
+      return res.status(400).json({ message: 'В зале есть проданные билеты, изменение конфигурации невозможно.' });
+    }
+
     await pool.query('UPDATE halls SET seats = $1 WHERE id = $2', [seats, id]);
     res.sendStatus(200);
   } catch (err) {
@@ -94,6 +125,15 @@ router.post('/halls/:id/prices', async (req, res) => {
   const { id } = req.params;
   const { regularPrice, vipPrice } = req.body;
   try {
+    const { rowCount } = await pool.query(
+      'SELECT 1 FROM sold_tickets st JOIN sessions s ON st.session_id = s.id WHERE s.hall_id = $1 LIMIT 1',
+      [id]
+    );
+
+    if (rowCount > 0) {
+      return res.status(400).json({ message: 'В зале есть проданные билеты, изменение цен невозможно.' });
+    }
+
     await pool.query('UPDATE halls SET price_regular = $1, price_vip = $2 WHERE id = $3', [regularPrice, vipPrice, id]);
     res.sendStatus(200);
   } catch (err) {

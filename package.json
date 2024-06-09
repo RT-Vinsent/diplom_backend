@@ -10,7 +10,9 @@
     "migrate:up": "node-pg-migrate up",
     "migrate:down": "node-pg-migrate down",
     "reset-db": "node resetDb.js",
-    "pm2-start": "pm2 start index.js --name idomvkino_server"
+    "pm2-start": "pm2 start index.js --name idomvkino_server",
+    "pm2-restart": "pm2 restart index.js --name idomvkino_server",
+    "pm2-stop": "pm2 stop index.js --name idomvkino_server"
   },
   "keywords": [],
   "author": "",
